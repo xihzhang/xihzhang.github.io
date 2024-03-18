@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   fetch(url, {
     method: 'POST',
-    mode: 'cors', // can be 'cors', 'no-cors', or 'same-origin'
+    mode: 'no-cors', // can be 'cors', 'no-cors', or 'same-origin'
     headers: headers,
     body: body
     })
