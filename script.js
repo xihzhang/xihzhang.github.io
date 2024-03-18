@@ -1,5 +1,5 @@
 document.getElementById('loadData').addEventListener('click', function() {
-  fetch('https://api.example.com/data')
+  fetch('https://login.usw2.pure.cloud/oauth/token')
     .then(response => {
       if (!response.ok) {
         throw new Error('Network response was not ok ' + response.statusText);
