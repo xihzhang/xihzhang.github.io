@@ -29,6 +29,30 @@
 
 
 <!DOCTYPE html>
+
+<!-- Script Tag -->
+
+<!-- Note: You can use the script from our CDN or host it locally -->
+<head>
+    <script src="https://sdk-cdn.mypurecloud.com/client-apps/2.6.7/purecloud-client-app-sdk-<hash>.min.js"></script>
+</head>
+
+<!--...-->
+
+<script>
+    // Note: You may need to use another event (e.g. load ) depending on how you load the script.
+    document.addEventListener('DOMContentLoaded', function () {
+        var ClientApp = window.purecloud.apps.ClientApp;
+        var myClientApp = new ClientApp({
+            gcHostOriginQueryParam: 'gcHostOrigin',
+            gcTargetEnvQueryParam: 'gcTargetEnv'
+        });
+
+        myClientApp.alerting.showToastPopup('Hello', 'Genesys Cloud');
+    });
+</script>
+
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
