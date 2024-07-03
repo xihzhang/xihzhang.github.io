@@ -205,7 +205,7 @@
                         id: $('#msgId').val(),
                         type: $('#toastType').val(),
                         markdownMessage: ($('#markdownMessage').is(":checked")),
-                        showCloseButton: ($('#showCloseButton').is(":checked"))
+          //            showCloseButton: ($('#showCloseButton').is(":checked"))
                     };
 
                     var timeoutStr = $('#timeout').val();
@@ -242,10 +242,10 @@
                 }
 
                 // OpenWindow
-                $('#openWindow').on('click', function () {
-                    const targetURL = document.getElementById('targetURL').value
-                    myClientApp.coreUi.openWindow(targetURL);
-                });
+        //        $('#openWindow').on('click', function () {
+        //            const targetURL = document.getElementById('targetURL').value
+        //            myClientApp.coreUi.openWindow(targetURL);
+        //        });
             });
         </script>
     </body>
