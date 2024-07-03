@@ -87,8 +87,8 @@
                 </div>
             </div>
             <fieldset>
-                <legend>More Options:</legend>
-                <div class="form-group">
+<!--                <legend>More Options:</legend>
+              <div class="form-group">
                     <label for="msgId" class="col-sm-1 control-label">ID</label>
                     <div class="col-sm-11">
                         <input type="text" class="form-control" id="msgId" placeholder="Message ID">
@@ -99,7 +99,7 @@
                             </p>
                         </div>
                     </div>
-                </div>
+                </div>  -->
                 <div class="form-group">
                     <label for="timeout" class="col-sm-1 control-label">Timeout</label>
                     <div class="col-sm-11">
@@ -109,7 +109,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
+   <!--             <div class="form-group">
                     <div class="col-sm-offset-1 col-sm-11">
                         <div class="checkbox">
                             <label>
@@ -123,7 +123,7 @@
                             </p>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </fieldset>
             <div class="form-group">
                 <div class="col-sm-offset-1 col-sm-11">
@@ -242,10 +242,10 @@
                 }
 
                 // OpenWindow
-        //        $('#openWindow').on('click', function () {
-        //            const targetURL = document.getElementById('targetURL').value
-        //            myClientApp.coreUi.openWindow(targetURL);
-        //        });
+                $('#openWindow').on('click', function () {
+                    const targetURL = document.getElementById('targetURL').value
+                    myClientApp.coreUi.openWindow(targetURL);
+                });
             });
         </script>
     </body>
