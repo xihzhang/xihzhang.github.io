@@ -38,6 +38,8 @@
             background-color: #f44336;
         }
     </style>
+    <!-- Include the PureCloud Client App SDK -->
+    <script src="https://sdk-cdn.mypurecloud.com/client-apps/2.6.3/purecloud-client-app-sdk-de77761d.min.js"></script>
 </head>
 <body>
     <h1>Simple Toast Sender</h1>
@@ -53,20 +55,21 @@
     <button id="eWatchAlert" onclick="sendEWatchAlert()">eWatch Alert</button>
 
     <script>
+        // Initialize the Client App SDK
+        let clientApp = new window.purecloud.apps.ClientApp({
+            pcEnvironmentQueryParam: 'pcEnvironment'
+        });
+
+        // Function to send a toast notification
+        function sendNotification(title, message) {
+            clientApp.alerting.showToastPopup(title, message);
+        }
+
         function sendToast() {
             const title = document.getElementById('title').value;
             const message = document.getElementById('message').value;
             
-            // This is where you would typically integrate with your client app SDK
-            // For demonstration purposes, we'll just log the toast details
-            console.log('Sending toast:', {
-                title: title,
-                message: message,
-                type: 'info',
-                timeout: 30000 // 30 seconds in milliseconds
-            });
-            
-            alert('Toast sent! Check the console for details.');
+            sendNotification(title, message);
         }
 
         function sendEWatchAlert() {
@@ -74,16 +77,7 @@
             const title = "eWatch Alert Title"; // Replace with your desired title
             const message = "This is a pre-set eWatch Alert message."; // Replace with your desired message
             
-            // This is where you would typically integrate with your client app SDK
-            // For demonstration purposes, we'll just log the toast details
-            console.log('Sending eWatch Alert:', {
-                title: title,
-                message: message,
-                type: 'info',
-                timeout: 30000 // 30 seconds in milliseconds
-            });
-            
-            alert('eWatch Alert sent! Check the console for details.');
+            sendNotification(title, message);
         }
     </script>
 </body>
