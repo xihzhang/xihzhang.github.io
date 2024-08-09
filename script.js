@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
       mode: 'no-cors', // can be 'cors', 'no-cors', or 'same-origin'
       headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': 'Basic ZTVkODk3ZGMtNzE3Yi00MWU5LTliMDgtMWQ1NDkzNDYyOGEyOnlvdm1XR21YdWJCVEpMQ2JCUkMydklfV053UFNUSm5EcTJUOV9qV2dqSTA='
+          'Authorization': 'Basic token'
         },
           body: 'grant_type=client_credentials' // Data from --data-urlencode
         })
