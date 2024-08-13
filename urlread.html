@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>URL Interpolation and Conversation Details</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Genesys Cloud Client App SDK -->
+    <script src="https://sdk-cdn.mypurecloud.com/client-apps/2.6.7/purecloud-client-app-sdk.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,10 +18,10 @@
             max-width: 800px;
             margin: 0 auto;
         }
-        h1 {
+        h1, h2, h3 {
             color: #333;
         }
-        .ex-url, .welcome-text, #conversationIdDisplay {
+        .ex-url, .welcome-text, #conversationIdDisplay, #debugInfo {
             background-color: #f4f4f4;
             padding: 10px;
             margin-bottom: 20px;
@@ -36,6 +38,10 @@
             font-size: 16px;
             margin: 4px 2px;
             cursor: pointer;
+        }
+        #debugInfo {
+            border: 1px solid #ccc;
+            white-space: pre-wrap;
         }
     </style>
 </head>
@@ -57,28 +63,46 @@
         <h2>Conversation Details</h2>
         <div id="conversationIdDisplay"></div>
         <button id="showDetailsBtn">Show Conversation Details</button>
+        
+        <h3>Debug Information</h3>
+        <div id="debugInfo"></div>
     </div>
 
     <script>
-        $(document).ready(function() {
-            // URL Interpolation logic
-            function getParameterByName(name, url) {
-                if (!url) url = window.location.href;
-                name = name.replace(/[\[\]]/g, "\\$&");
-                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)", "i"), // Note the "i" flag for case-insensitive
-                    results = regex.exec(url);
-                if (!results) return null;
-                if (!results[2]) return '';
-                return decodeURIComponent(results[2].replace(/\+/g, " "));
-            }
+        let myClientApp;
 
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)", "i"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+        function updateDebugInfo() {
+            var debugInfo = "Debug Information:\n";
+            debugInfo += "myClientApp initialized: " + (typeof myClientApp !== 'undefined') + "\n";
+            if (typeof myClientApp !== 'undefined') {
+                debugInfo += "myClientApp.conversations defined: " + (typeof myClientApp.conversations !== 'undefined') + "\n";
+                if (typeof myClientApp.conversations !== 'undefined') {
+                    debugInfo += "myClientApp.conversations.showInteractionDetails defined: " + (typeof myClientApp.conversations.showInteractionDetails === 'function') + "\n";
+                }
+            }
+            debugInfo += "conversationId: " + conversationId + "\n";
+            debugInfo += "gcHostOrigin: " + getParameterByName('gcHostOrigin') + "\n";
+            debugInfo += "gcTargetEnv: " + getParameterByName('gcTargetEnv') + "\n";
+            $('#debugInfo').text(debugInfo);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
             var url = window.location.href;
             $('.ex-url').text(url);
 
             var welcomeText = getParameterByName('welcome_text') || 'Welcome!';
             $('.welcome-text').text(welcomeText);
 
-            // Conversation Details logic
             var conversationId = getParameterByName('conversationId') || getParameterByName('conversationID');
             if (conversationId) {
                 $('#conversationIdDisplay').text('Conversation ID: ' + conversationId);
@@ -86,13 +110,33 @@
                 $('#conversationIdDisplay').text('Conversation ID not found in the URL.');
             }
 
+            // Initialize the SDK
+            try {
+                var ClientApp = window.purecloud.apps.ClientApp;
+                myClientApp = new ClientApp({
+                    gcHostOriginQueryParam: 'gcHostOrigin',
+                    gcTargetEnvQueryParam: 'gcTargetEnv'
+                });
+                console.log('SDK initialized successfully');
+                myClientApp.alerting.showToastPopup('Hello', 'Genesys Cloud');
+            } catch (error) {
+                console.error('Error initializing SDK:', error);
+            }
+
+            updateDebugInfo();
+
             $('#showDetailsBtn').click(function() {
+                updateDebugInfo();
                 if (conversationId) {
-                    // Assuming myClientApp is already initialized
-                    if (typeof myClientApp !== 'undefined' && myClientApp.conversations && myClientApp.conversations.showInteractionDetails) {
-                        myClientApp.conversations.showInteractionDetails(conversationId);
+                    if (typeof myClientApp !== 'undefined' && myClientApp.conversations && typeof myClientApp.conversations.showInteractionDetails === 'function') {
+                        try {
+                            myClientApp.conversations.showInteractionDetails(conversationId);
+                        } catch (error) {
+                            alert('Error calling showInteractionDetails: ' + error.message);
+                            console.error('Error details:', error);
+                        }
                     } else {
-                        alert('Client SDK not initialized or showInteractionDetails method not available.');
+                        alert('Client SDK not initialized or showInteractionDetails method not available. Check the Debug Information for details.');
                     }
                 } else {
                     alert('Conversation ID not found in the URL.');
