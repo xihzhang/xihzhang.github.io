@@ -19,7 +19,7 @@
         h1 {
             color: #333;
         }
-        .ex-url, .welcome-text {
+        .ex-url, .welcome-text, #conversationIdDisplay {
             background-color: #f4f4f4;
             padding: 10px;
             margin-bottom: 20px;
@@ -55,6 +55,7 @@
         <div class="welcome-text"></div>
         
         <h2>Conversation Details</h2>
+        <div id="conversationIdDisplay"></div>
         <button id="showDetailsBtn">Show Conversation Details</button>
     </div>
 
@@ -64,7 +65,7 @@
             function getParameterByName(name, url) {
                 if (!url) url = window.location.href;
                 name = name.replace(/[\[\]]/g, "\\$&");
-                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)", "i"), // Note the "i" flag for case-insensitive
                     results = regex.exec(url);
                 if (!results) return null;
                 if (!results[2]) return '';
@@ -78,11 +79,21 @@
             $('.welcome-text').text(welcomeText);
 
             // Conversation Details logic
+            var conversationId = getParameterByName('conversationId') || getParameterByName('conversationID');
+            if (conversationId) {
+                $('#conversationIdDisplay').text('Conversation ID: ' + conversationId);
+            } else {
+                $('#conversationIdDisplay').text('Conversation ID not found in the URL.');
+            }
+
             $('#showDetailsBtn').click(function() {
-                var conversationId = getParameterByName('conversation_id');
                 if (conversationId) {
                     // Assuming myClientApp is already initialized
-                    myClientApp.conversations.showInteractionDetails(conversationId);
+                    if (typeof myClientApp !== 'undefined' && myClientApp.conversations && myClientApp.conversations.showInteractionDetails) {
+                        myClientApp.conversations.showInteractionDetails(conversationId);
+                    } else {
+                        alert('Client SDK not initialized or showInteractionDetails method not available.');
+                    }
                 } else {
                     alert('Conversation ID not found in the URL.');
                 }
