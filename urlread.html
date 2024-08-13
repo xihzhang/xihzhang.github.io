@@ -70,6 +70,7 @@
 
     <script>
         let myClientApp;
+        let conversationId;
 
         function getParameterByName(name, url) {
             if (!url) url = window.location.href;
@@ -94,23 +95,10 @@
             debugInfo += "gcHostOrigin: " + getParameterByName('gcHostOrigin') + "\n";
             debugInfo += "gcTargetEnv: " + getParameterByName('gcTargetEnv') + "\n";
             $('#debugInfo').text(debugInfo);
+            console.log(debugInfo);  // Also log to console
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            var url = window.location.href;
-            $('.ex-url').text(url);
-
-            var welcomeText = getParameterByName('welcome_text') || 'Welcome!';
-            $('.welcome-text').text(welcomeText);
-
-            var conversationId = getParameterByName('conversationId') || getParameterByName('conversationID');
-            if (conversationId) {
-                $('#conversationIdDisplay').text('Conversation ID: ' + conversationId);
-            } else {
-                $('#conversationIdDisplay').text('Conversation ID not found in the URL.');
-            }
-
-            // Initialize the SDK
+        function initializeSDK() {
             try {
                 var ClientApp = window.purecloud.apps.ClientApp;
                 myClientApp = new ClientApp({
@@ -119,26 +107,47 @@
                 });
                 console.log('SDK initialized successfully');
                 myClientApp.alerting.showToastPopup('Hello', 'Genesys Cloud');
+                updateDebugInfo();
             } catch (error) {
                 console.error('Error initializing SDK:', error);
+                $('#debugInfo').text('Error initializing SDK: ' + error.message);
+            }
+        }
+
+        $(document).ready(function () {
+            var url = window.location.href;
+            $('.ex-url').text(url);
+
+            var welcomeText = getParameterByName('welcome_text') || 'Welcome!';
+            $('.welcome-text').text(welcomeText);
+
+            conversationId = getParameterByName('conversationId') || getParameterByName('conversationID');
+            if (conversationId) {
+                $('#conversationIdDisplay').text('Conversation ID: ' + conversationId);
+            } else {
+                $('#conversationIdDisplay').text('Conversation ID not found in the URL.');
             }
 
-            updateDebugInfo();
+            initializeSDK();
 
             $('#showDetailsBtn').click(function() {
+                console.log('Button clicked');
                 updateDebugInfo();
                 if (conversationId) {
                     if (typeof myClientApp !== 'undefined' && myClientApp.conversations && typeof myClientApp.conversations.showInteractionDetails === 'function') {
                         try {
+                            console.log('Attempting to show interaction details for conversation:', conversationId);
                             myClientApp.conversations.showInteractionDetails(conversationId);
                         } catch (error) {
+                            console.error('Error calling showInteractionDetails:', error);
                             alert('Error calling showInteractionDetails: ' + error.message);
-                            console.error('Error details:', error);
                         }
                     } else {
+                        console.error('Client SDK not initialized or showInteractionDetails method not available');
                         alert('Client SDK not initialized or showInteractionDetails method not available. Check the Debug Information for details.');
                     }
                 } else {
+                    console.error('Conversation ID not found in the URL');
                     alert('Conversation ID not found in the URL.');
                 }
             });
