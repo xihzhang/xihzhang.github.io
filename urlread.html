@@ -97,9 +97,13 @@
             const envQueryParamName = 'pcEnvironment';
             const hostQueryParamName = 'gcHostOrigin';
             const targetEnvQueryParamName = 'gcTargetEnv';
-            const conversationIdParamName = 'conversationId';  // Changed from 'gcConversationId' to 'conversationId'
+            const conversationIdParamName = 'conversationId';
+            
+            // Parse both query parameters and hash fragment
             const locationSearch = (window && window.location && typeof window.location.search === 'string') ? window.location.search : '';
-            const queryParams = new URLSearchParams(locationSearch);
+            const locationHash = (window && window.location && typeof window.location.hash === 'string') ? window.location.hash : '';
+            const queryParams = new URLSearchParams(locationSearch + locationHash.replace('#', '&'));
+
             let clientApp = null;
             if (queryParams.get(hostQueryParamName) || queryParams.get(targetEnvQueryParamName)) {
                 // Compute Genesys Cloud region from host origin
