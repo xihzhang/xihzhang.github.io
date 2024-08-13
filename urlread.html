@@ -3,81 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>URL Interpolation with Interaction Details</title>
+    <title>URL Interpolation and Conversation Details</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <style>
-        #statusMessage {
-            margin-top: 10px;
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+        }
+        .ex-url, .welcome-text {
+            background-color: #f4f4f4;
             padding: 10px;
+            margin-bottom: 20px;
             border-radius: 5px;
         }
-        .error { background-color: #ffeeee; color: #cc0000; }
-        .info { background-color: #eeeeff; color: #0000cc; }
-        .success { background-color: #eeffee; color: #00cc00; }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
     </style>
-    <script>
-        // Function to get conversationID from URL parameters
-        function getConversationIdFromUrl() {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('conversationId');
-        }
-
-        // Function to show interaction details with retry mechanism
-        function showInteractionDetails(conversationId, retryCount = 0) {
-            if (typeof myClientApp !== 'undefined' && 
-                myClientApp.conversations && 
-                typeof myClientApp.conversations.showInteractionDetails === 'function') {
-                try {
-                    myClientApp.conversations.showInteractionDetails(conversationId);
-                    updateStatus('Interaction details loaded successfully.', 'success');
-                } catch (error) {
-                    updateStatus(`Error showing interaction details: ${error.message}`, 'error');
-                }
-            } else {
-                if (retryCount < 5) {
-                    updateStatus(`Waiting for myClientApp to be available... (Attempt ${retryCount + 1}/5)`, 'info');
-                    setTimeout(() => showInteractionDetails(conversationId, retryCount + 1), 1000);
-                } else {
-                    updateStatus('Unable to show interaction details. The required function is not available. Please check if myClientApp is properly loaded.', 'error');
-                }
-            }
-        }
-
-        // Function to update status message
-        function updateStatus(message, type) {
-            const statusElement = document.getElementById('statusMessage');
-            statusElement.textContent = message;
-            statusElement.className = type;
-        }
-
-        // Execute when the DOM is fully loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            // Display the current URL
-            document.querySelector('.ex-url').textContent = window.location.href;
-
-            const conversationId = getConversationIdFromUrl();
-            if (conversationId) {
-                document.getElementById('conversationIdDisplay').textContent = conversationId;
-                showInteractionDetails(conversationId);
-            } else {
-                updateStatus('No conversationId found in URL. Please add a conversationId parameter to the URL.', 'error');
-            }
-        });
-    </script>
 </head>
 <body>
-    <h1>URL Interpolation</h1>
-    <p>For full functionality of this site it is necessary to enable JavaScript. Here are the <a href="http://www.enable-javascript.com/" target="_blank">instructions how to enable JavaScript in your web browser</a>.</p>
-
-    <h2>URL</h2>
-    <div class="ex-url"></div>
-
-    <h2>Localization Demo</h2>
-    <div class="welcome-text"></div>
-
-    <div id="interactionDetails">
-        <h2>Interaction Details</h2>
-        <p>Conversation ID: <span id="conversationIdDisplay"></span></p>
-        <div id="statusMessage"></div>
+    <div class="container">
+        <h1>URL Interpolation and Conversation Details</h1>
+        
+        <p>For full functionality of this site it is necessary to enable JavaScript. Here are the <a href="http://www.enable-javascript.com/" target="_blank">instructions how to enable JavaScript in your web browser</a>.</p>
+        
+        <h2>URL Interpolation</h2>
+        <p>Data can be seeded into an app (Standalone or Widget) via URL string replacement.</p>
+        
+        <h3>URL</h3>
+        <div class="ex-url"></div>
+        
+        <h3>Localization Demo</h3>
+        <div class="welcome-text"></div>
+        
+        <h2>Conversation Details</h2>
+        <button id="showDetailsBtn">Show Conversation Details</button>
     </div>
+
+    <script>
+        $(document).ready(function() {
+            // URL Interpolation logic
+            function getParameterByName(name, url) {
+                if (!url) url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            }
+
+            var url = window.location.href;
+            $('.ex-url').text(url);
+
+            var welcomeText = getParameterByName('welcome_text') || 'Welcome!';
+            $('.welcome-text').text(welcomeText);
+
+            // Conversation Details logic
+            $('#showDetailsBtn').click(function() {
+                var conversationId = getParameterByName('conversation_id');
+                if (conversationId) {
+                    // Assuming myClientApp is already initialized
+                    myClientApp.conversations.showInteractionDetails(conversationId);
+                } else {
+                    alert('Conversation ID not found in the URL.');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
