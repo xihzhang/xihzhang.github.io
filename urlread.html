@@ -49,8 +49,6 @@
     <div class="container">
         <h1>URL Interpolation and Conversation Details</h1>
         
-        <p>For full functionality of this site it is necessary to enable JavaScript. Here are the <a href="http://www.enable-javascript.com/" target="_blank">instructions how to enable JavaScript in your web browser</a>.</p>
-        
         <h2>URL Interpolation</h2>
         <p>Data can be seeded into an app (Standalone or Widget) via URL string replacement.</p>
         
@@ -95,23 +93,29 @@
             debugInfo += "gcHostOrigin: " + getParameterByName('gcHostOrigin') + "\n";
             debugInfo += "gcTargetEnv: " + getParameterByName('gcTargetEnv') + "\n";
             $('#debugInfo').text(debugInfo);
-            console.log(debugInfo);  // Also log to console
+            console.log(debugInfo);
         }
 
         function initializeSDK() {
-            try {
-                var ClientApp = window.purecloud.apps.ClientApp;
-                myClientApp = new ClientApp({
-                    gcHostOriginQueryParam: 'gcHostOrigin',
-                    gcTargetEnvQueryParam: 'gcTargetEnv'
-                });
-                console.log('SDK initialized successfully');
-                myClientApp.alerting.showToastPopup('Hello', 'Genesys Cloud');
-                updateDebugInfo();
-            } catch (error) {
-                console.error('Error initializing SDK:', error);
-                $('#debugInfo').text('Error initializing SDK: ' + error.message);
-            }
+            return new Promise((resolve, reject) => {
+                try {
+                    const ClientApp = window.purecloud.apps.ClientApp;
+                    myClientApp = new ClientApp({
+                        pcEnvironmentQueryParam: 'pcEnvironment'
+                    });
+                    
+                    myClientApp.lifecycle.addbootstrapListener(() => {
+                        console.log('SDK bootstrap complete');
+                        resolve();
+                    });
+
+                    myClientApp.alerting.showToastPopup('SDK Initialized', 'Genesys Cloud');
+                } catch (error) {
+                    console.error('Error initializing SDK:', error);
+                    $('#debugInfo').text('Error initializing SDK: ' + error.message);
+                    reject(error);
+                }
+            });
         }
 
         $(document).ready(function () {
@@ -121,14 +125,19 @@
             var welcomeText = getParameterByName('welcome_text') || 'Welcome!';
             $('.welcome-text').text(welcomeText);
 
-            conversationId = getParameterByName('conversationId') || getParameterByName('conversationID');
+            conversationId = getParameterByName('conversationId') || getParameterByName('interactionId');
             if (conversationId) {
                 $('#conversationIdDisplay').text('Conversation ID: ' + conversationId);
             } else {
                 $('#conversationIdDisplay').text('Conversation ID not found in the URL.');
             }
 
-            initializeSDK();
+            initializeSDK().then(() => {
+                console.log('SDK initialized successfully');
+                updateDebugInfo();
+            }).catch((error) => {
+                console.error('Failed to initialize SDK:', error);
+            });
 
             $('#showDetailsBtn').click(function() {
                 console.log('Button clicked');
