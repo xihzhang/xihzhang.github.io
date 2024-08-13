@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>URL Interpolation</title>
+    <title>URL Interpolation with Interaction Details</title>
     <script>
         // Function to get conversationID from URL parameters
         function getConversationIdFromUrl() {
@@ -13,20 +13,28 @@
 
         // Function to show interaction details
         function showInteractionDetails(conversationId) {
-            if (typeof myClientApp !== 'undefined' && myClientApp.conversations && myClientApp.conversations.showInteractionDetails) {
+            if (typeof myClientApp !== 'undefined' && 
+                myClientApp.conversations && 
+                typeof myClientApp.conversations.showInteractionDetails === 'function') {
                 myClientApp.conversations.showInteractionDetails(conversationId);
             } else {
-                console.error('myClientApp or showInteractionDetails function is not available');
+                console.error('myClientApp.conversations.showInteractionDetails is not available');
+                document.getElementById('errorMessage').textContent = 'Unable to show interaction details. The required function is not available.';
             }
         }
 
         // Execute when the DOM is fully loaded
         document.addEventListener('DOMContentLoaded', function() {
+            // Display the current URL
+            document.querySelector('.ex-url').textContent = window.location.href;
+
             const conversationId = getConversationIdFromUrl();
             if (conversationId) {
+                document.getElementById('conversationIdDisplay').textContent = conversationId;
                 showInteractionDetails(conversationId);
             } else {
-                console.log('No conversationId found in URL');
+                document.getElementById('conversationIdDisplay').textContent = 'Not provided';
+                document.getElementById('errorMessage').textContent = 'No conversationId found in URL';
             }
         });
     </script>
@@ -44,16 +52,7 @@
     <div id="interactionDetails">
         <h2>Interaction Details</h2>
         <p>Conversation ID: <span id="conversationIdDisplay"></span></p>
+        <p id="errorMessage"></p>
     </div>
-
-    <script>
-        // Display the current URL
-        document.querySelector('.ex-url').textContent = window.location.href;
-
-        // Display the conversation ID
-        const conversationIdDisplay = document.getElementById('conversationIdDisplay');
-        const conversationId = getConversationIdFromUrl();
-        conversationIdDisplay.textContent = conversationId || 'Not provided';
-    </script>
 </body>
 </html>
