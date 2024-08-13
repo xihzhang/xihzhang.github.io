@@ -129,6 +129,13 @@
         let conversationId;
         let pcEnvironment;
 
+        function getParamValue(paramPairs) {
+            if (decodeURIComponent) {
+                return decodeURIComponent(paramPairs[1]);
+            }
+            return paramPairs[1];
+        }
+
         function initializeClientApp() {
             const ClientApp = window.purecloud.apps.ClientApp;
             myClientApp = new ClientApp({
@@ -136,13 +143,24 @@
             });
 
             // Parse URL parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            conversationId = urlParams.get('conversationId') || urlParams.get('pcConversationId') || urlParams.get('gcConversationId');
-            pcEnvironment = urlParams.get('pcEnvironment') || urlParams.get('environment');
+            var queryString = window.location.search.substring(1);
+            var pairs = queryString.split('&');
+            for (let i = 0; i < pairs.length; i++) {
+                let currParam = pairs[i].split('=');
+                if (['conversationId', 'pcConversationId', 'gcConversationId'].indexOf(currParam[0]) !== -1) {
+                    conversationId = getParamValue(currParam);
+                } else if (currParam[0] === 'pcEnvironment' || (currParam[0] === 'environment' && pcEnvironment === null)) {
+                    pcEnvironment = getParamValue(currParam);
+                }
+            }
 
             // Display parsed information
             document.getElementById('conversationId').textContent = conversationId || 'Not available';
             document.getElementById('pcEnvironment').textContent = pcEnvironment || 'Not available';
+            document.getElementById('url').textContent = window.location.href;
+
+            // Set welcome text
+            setWelcomeText();
         }
 
         function showConversationDetails() {
@@ -154,14 +172,41 @@
             }
         }
 
+        function setWelcomeText() {
+            const DEFAULT_LANG_TAG = 'en-us';
+            const welcomeTokens = {
+                de: "Willkommen bei Genesys Cloud",
+                'en-us': "Welcome to Genesys Cloud",
+                es: "Bienvenido a Genesys Cloud",
+                fr: "Bienvenue dans Genesys Cloud",
+                it: "Benvenuti a Genesys Cloud",
+                ja: "Genesys Cloud へようこそ!",
+                ko: "Genesys Cloud 시작",
+                nl: "Welkom bij Genesys Cloud",
+                no: "Velkommen til Genesys Cloud",
+                pl: "Witamy w Genesys Cloud",
+                'pt-br': "Bem-vindo ao Genesys Cloud",
+                sv: "Välkommen till Genesys Cloud",
+                th: "ขอต้อนรับสู่ Genesys Cloud",
+                tr: "Genesys Cloud'a hoş geldiniz",
+                'zh-cn': "欢迎使用 Genesys Cloud"
+            };
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const langTag = urlParams.get('langTag') || urlParams.get('pcLangTag') || DEFAULT_LANG_TAG;
+            
+            document.getElementById('welcome-text').textContent = welcomeTokens[langTag] || welcomeTokens[DEFAULT_LANG_TAG];
+        }
+
         // Initialize the app when the page loads
         window.addEventListener('load', initializeClientApp);
     </script>
 </head>
 <body>
-    <h1>Conversation Details</h1>
+    <h1 id="welcome-text"></h1>
+    <h2>URL Interpolation</h2>
+    <p>URL: <span id="url"></span></p>
     <p>Conversation ID: <span id="conversationId"></span></p>
     <p>PC Environment: <span id="pcEnvironment"></span></p>
     <button onclick="showConversationDetails()">Show Conversation Details</button>
 </body>
-</html>
