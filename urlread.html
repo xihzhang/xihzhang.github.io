@@ -97,7 +97,7 @@
             const envQueryParamName = 'pcEnvironment';
             const hostQueryParamName = 'gcHostOrigin';
             const targetEnvQueryParamName = 'gcTargetEnv';
-            const conversationIdParamName = 'gcConversationId';
+            const conversationIdParamName = 'conversationId';  // Changed from 'gcConversationId' to 'conversationId'
             const locationSearch = (window && window.location && typeof window.location.search === 'string') ? window.location.search : '';
             const queryParams = new URLSearchParams(locationSearch);
             let clientApp = null;
