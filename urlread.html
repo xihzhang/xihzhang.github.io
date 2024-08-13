@@ -94,6 +94,7 @@
             const envQueryParamName = 'pcEnvironment';
             const hostQueryParamName = 'gcHostOrigin';
             const targetEnvQueryParamName = 'gcTargetEnv';
+            const conversationIdParamName = 'gcConversationId';
             const locationSearch = (window && window.location && typeof window.location.search === 'string') ? window.location.search : '';
             const queryParams = new URLSearchParams(locationSearch);
             let clientApp = null;
@@ -165,14 +166,8 @@
             document.querySelector('.welcome-text').textContent = 'Welcome text placeholder';
 
             // Display Conversation ID, Host Origin, and Target Environment
-            clientApp.conversations.getCurrentConversation()
-                .then(conversation => {
-                    document.querySelector('.conversation-id').textContent = conversation.id || 'Not available';
-                })
-                .catch(error => {
-                    console.error('Error getting conversation:', error);
-                    document.querySelector('.conversation-id').textContent = 'Error retrieving';
-                });
+            const conversationId = queryParams.get(conversationIdParamName) || 'Not available';
+            document.querySelector('.conversation-id').textContent = conversationId;
 
             document.querySelector('.host-origin').textContent = queryParams.get(hostQueryParamName) || 'Not set';
             document.querySelector('.target-env').textContent = queryParams.get(targetEnvQueryParamName) || 'Not set';
