@@ -125,21 +125,27 @@
     <title>Show Conversation Details</title>
     <script src="https://sdk-cdn.mypurecloud.com/javascript/latest/purecloud-platform-client-v2.min.js"></script>
     <script>
-        // Initialize the Client App SDK
         let myClientApp;
+        let conversationId;
+        let pcEnvironment;
+
         function initializeClientApp() {
             const ClientApp = window.purecloud.apps.ClientApp;
             myClientApp = new ClientApp({
                 pcEnvironmentQueryParam: 'pcEnvironment'
             });
+
+            // Parse URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            conversationId = urlParams.get('conversationId') || urlParams.get('pcConversationId') || urlParams.get('gcConversationId');
+            pcEnvironment = urlParams.get('pcEnvironment') || urlParams.get('environment');
+
+            // Display parsed information
+            document.getElementById('conversationId').textContent = conversationId || 'Not available';
+            document.getElementById('pcEnvironment').textContent = pcEnvironment || 'Not available';
         }
 
-        // Function to show conversation details
         function showConversationDetails() {
-            // Fetch the conversation ID from the page
-            // This is a placeholder - you'll need to replace this with the actual method to get the conversation ID
-            const conversationId = getCurrentConversationId();
-            
             if (conversationId) {
                 myClientApp.conversations.showInteractionDetails(conversationId);
             } else {
@@ -148,19 +154,14 @@
             }
         }
 
-        // Placeholder function to get the current conversation ID
-        // You'll need to implement this based on how your page stores or retrieves the conversation ID
-        function getCurrentConversationId() {
-            // This is just an example - replace with actual implementation
-            return 'af2ef59d-9bc5-4436-8738-97c04869c81c';
-        }
-
         // Initialize the app when the page loads
         window.addEventListener('load', initializeClientApp);
     </script>
 </head>
 <body>
     <h1>Conversation Details</h1>
+    <p>Conversation ID: <span id="conversationId"></span></p>
+    <p>PC Environment: <span id="pcEnvironment"></span></p>
     <button onclick="showConversationDetails()">Show Conversation Details</button>
 </body>
 </html>
