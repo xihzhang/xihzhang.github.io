@@ -1,95 +1,100 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Genesys Cloud Propose Message Demo with URL Interpolation</title>
-    <script src="https://sdk-cdn.mypurecloud.com/client-apps/2.6.3/purecloud-client-app-sdk-de77761d.min.js"></script>
-    <style>
-        #app {
-            display: flex;
-            flex-direction: column;
-            max-width: 300px;
-        }
+    <head>
+        <title>Genesys Cloud Propose Message Demo with URL Interpolation</title>
+        <script src="https://sdk-cdn.mypurecloud.com/client-apps/2.6.3/purecloud-client-app-sdk-de77761d.min.js"></script>
+        <style>
+            #app {
+                display: flex;
+                flex-direction: column;
+                max-width: 300px;
+            }
+            .button-list, form {
+                display: flex;
+                flex-direction: column;
+                border: 1px solid #ccc;
+                padding: 0 5px;
+            }
+            button, input, div {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 16px;
+                margin: 5px 0;
+            }
+            button {
+                border: none;
+                background-color: #2a60c8;
+                color: #fdfdfd;
+                border-radius: 4px;
+                padding: 6px 10px;
+                box-shadow: 1px 1px 4px -1px #666;
+                cursor: pointer;
+            }
+            input {
+                padding: 6px;
+                border-radius: 4px;
+                border: 1px solid #ccc;
+            }
+            button:active {
+                box-shadow: none;
+            }
+            button:disabled {
+                background-color: grey;
+                cursor: not-allowed;
+            }
+            .info-section {
+                margin-top: 20px;
+                border: 1px solid #ccc;
+                padding: 10px;
+                border-radius: 4px;
+            }
+            .info-item {
+                margin-bottom: 10px;
+            }
+            .info-label {
+                font-weight: bold;
+            }
+            #interaction-details-result {
+                margin-top: 10px;
+                padding: 10px;
+                background-color: #f0f0f0;
+                border-radius: 4px;
+                white-space: pre-wrap;
+                word-break: break-word;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app"></div>
 
-        .button-list, form {
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #ccc;
-            padding: 0 5px;
-        }
-
-        button, input, div {
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 16px;
-            margin: 5px 0;
-        }
-
-        button {
-            border: none;
-            background-color: #2a60c8;
-            color: #fdfdfd;
-            border-radius: 4px;
-            padding: 6px 10px;
-            box-shadow: 1px 1px 4px -1px #666;
-            cursor: pointer;
-        }
-
-        input {
-            padding: 6px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
-
-        button:active {
-            box-shadow: none;
-        }
-
-        button:disabled {
-            background-color: grey;
-            cursor: not-allowed;
-        }
-
-        .info-section {
-            margin-top: 20px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 4px;
-        }
-
-        .info-item {
-            margin-bottom: 10px;
-        }
-
-        .info-label {
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-    <div id="app"></div>
-
-    <div class="info-section">
-        <h1>URL Interpolation and App Info</h1>
-        <div class="info-item">
-            <span class="info-label">URL:</span>
-            <span class="ex-url"></span>
+        <div class="info-section">
+            <h1>URL Interpolation and App Info</h1>
+            <div class="info-item">
+                <span class="info-label">URL:</span>
+                <span class="ex-url"></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Conversation ID:</span>
+                <span class="conversation-id"></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Host Origin:</span>
+                <span class="host-origin"></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Target Environment:</span>
+                <span class="target-env"></span>
+            </div>
+            <h2>Localization Demo</h2>
+            <div class="welcome-text"></div>
         </div>
-        <div class="info-item">
-            <span class="info-label">Conversation ID:</span>
-            <span class="conversation-id"></span>
-        </div>
-        <div class="info-item">
-            <span class="info-label">Host Origin:</span>
-            <span class="host-origin"></span>
-        </div>
-        <div class="info-item">
-            <span class="info-label">Target Environment:</span>
-            <span class="target-env"></span>
-        </div>
-        <h2>Localization Demo</h2>
-        <div class="welcome-text"></div>
-    </div>
 
-    <script>
+        <div class="info-section">
+            <h2>Interaction Details</h2>
+            <button id="show-interaction-details">Show Interaction Details</button>
+            <div id="interaction-details-result"></div>
+        </div>
+
+        <script>
         (function () {
             const envQueryParamName = 'pcEnvironment';
             const hostQueryParamName = 'gcHostOrigin';
@@ -122,10 +127,10 @@
             const App = document.getElementById('app');
 
             const container = node(App, `
-                    <div class="button-list">
-                        <div class="header">Pre-made:</div>
-                    </div>
-                `);
+                <div class="button-list">
+                    <div class="header">Pre-made:</div>
+                </div>
+            `);
 
             const precannedButtons = [
                 node(container, `<button>Thank you for contacting us</button`),
@@ -135,14 +140,14 @@
             ];
 
             const customResponse = node(App, `
-                    <form>
-                        <div class="header">Custom:</div>
-                        <input type="text" />
-                        <button disabled type="submit">Fill</button>
-                    </form>
-                `);
+                <form>
+                    <div class="header">Custom:</div>
+                    <input type="text" />
+                    <button disabled type="submit">Fill</button>
+                </form>
+            `);
 
-            const [, customInput, fillCustomBtn] = customResponse.children;
+            const [,customInput,fillCustomBtn] = customResponse.children;
             customInput.oninput = e => {
                 fillCustomBtn.disabled = !e.target.value;
             }
@@ -171,7 +176,21 @@
 
             document.querySelector('.host-origin').textContent = queryParams.get(hostQueryParamName) || 'Not set';
             document.querySelector('.target-env').textContent = queryParams.get(targetEnvQueryParamName) || 'Not set';
+
+            // Show Interaction Details
+            const showInteractionDetailsButton = document.getElementById('show-interaction-details');
+            const interactionDetailsResult = document.getElementById('interaction-details-result');
+
+            showInteractionDetailsButton.addEventListener('click', () => {
+                clientApp.conversations.showInteractionDetails(conversationId)
+                    .then(result => {
+                        interactionDetailsResult.textContent = JSON.stringify(result, null, 2);
+                    })
+                    .catch(error => {
+                        interactionDetailsResult.textContent = 'Error: ' + error.message;
+                    });
+            });
         }());
-    </script>
-</body>
+        </script>
+    </body>
 </html>
