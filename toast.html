@@ -1,253 +1,200 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Collaborate Toast Demo</title>
-
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
-        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-        <script src="https://sdk-cdn.mypurecloud.com/client-apps/2.6.3/purecloud-client-app-sdk-de77761d.min.js"></script>
-        <style>
-            body {
-                margin-left: 20px;
-            }
-
-            .msg-group {
-                position: relative;
-            }
-
-            .msg-group .checkbox {
-                position: absolute;
-                height: 1em;
-                font-size: 1em;
-                right: 15px;
-            }
-
-            @media (max-width: 768px) {
-                .msg-group .checkbox {
-                    top: -20px;
-                    right: 15px;
-                    padding: 0;
-                }
-            }
-
-            @media (min-width: 768px) {
-                .msg-group .checkbox {
-                    bottom: 0;
-                    margin-left: 15px;
-                    padding-top: 0;
-                }
-            }
-
-            fieldset {
-                margin-top: 30px;
-            }
-        </style>
-    </head>
-
-    <body>
-        <noscript>
-            For full functionality of this site it is necessary to enable JavaScript. Here are the <a href="http://www.enable-javascript.com/" target="_blank">instructions how to enable JavaScript in your web browser</a>.
-        </noscript>
-
-        <h1>Send a Toast Demo</h1>
-
-        <form class="form-horizontal container-fluid">
-            <div class="form-group">
-                <label for="title" class="col-sm-1 control-label">Title</label>
-                <div class="col-sm-11">
-                    <input type="text" class="form-control" id="title" placeholder="Message Title">
-                </div>
-            </div>
-            <div class="form-group msg-group">
-                <label for="message" class="col-sm-1 control-label">Message</label>
-                <div class="col-sm-11">
-                    <textarea name="textarea" rows="3" class="form-control" id="message" placeholder="Message Text"></textarea>
-                    <div class="help-block">
-                        <p>
-                            <span class="label label-info">Note:</span>
-                            Supports Emoticons, Unicode Emojis, and Emoji Shortcodes
-                        </p>
-                    </div>
-                    <div class="checkbox">
-                        <label title="Interpret Message Text as Markdown" aria-label="Interpret Message Text as Markdown">
-                            <input type="checkbox" id="markdownMessage" checked="true" tabindex="1"> Markdown
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="type" class="col-sm-1 control-label">Type</label>
-                <div class="col-sm-11">
-                    <select class="form-control" id="toastType">
-                        <option value="info" selected="true">Info</option>
-                        <option value="success">Success</option>
-                        <option value="error">Error</option>
-                    </select>
-                </div>
-            </div>
-            <fieldset>
-<!--                <legend>More Options:</legend>
-              <div class="form-group">
-                    <label for="msgId" class="col-sm-1 control-label">ID</label>
-                    <div class="col-sm-11">
-                        <input type="text" class="form-control" id="msgId" placeholder="Message ID">
-                        <div class="help-block">
-                            <p>
-                                <span class="label label-info">Note:</span>
-                                Messages with same ID are replaced
-                            </p>
-                        </div>
-                    </div>
-                </div>  -->
-                <div class="form-group">
-                    <label for="timeout" class="col-sm-1 control-label">Timeout</label>
-                    <div class="col-sm-11">
-                        <input type="number" class="form-control" id="timeout" min="0" value="5"></input>
-                        <div class="help-block">
-                            <p><span class="label label-info">Note:</span> Set to 0 for no timeout</p>
-                        </div>
-                    </div>
-                </div>
-   <!--             <div class="form-group">
-                    <div class="col-sm-offset-1 col-sm-11">
-                        <div class="checkbox">
-                            <label>
-                                <input id="showCloseButton" type="checkbox"> Show Close Button
-                            </label>
-                        </div>
-                        <div class="help-block">
-                            <p>
-                                <span class="label label-danger">Required:</span>
-                                Failure Toasts and no timeouts
-                            </p>
-                        </div>
-                    </div>
-                </div> -->
-            </fieldset>
-            <div class="form-group">
-                <div class="col-sm-offset-1 col-sm-11">
-                    <button type="submit" class="btn btn-primary send-toast">Send Toast</button>
-                </div>
-            </div>
-        </form>
-
-        <h1>Request Attention</h1>
-        <div class="attention-controls">
-            <button class="btn btn-primary increase-attn-btn">Increase Attention Count</button>
-            <button class="btn btn-primary clear-attn-btn">Clear Attention Count</button>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genesys Cloud Toast Notification Demo</title>
+    <script src="https://sdk-cdn.mypurecloud.com/client-apps/2.6.0/purecloud-client-app-sdk.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        button {
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Toast Notification Demo</h1>
+        
+        <div class="form-group">
+            <label for="toastTitle">Title:</label>
+            <input type="text" id="toastTitle" value="Important Message">
         </div>
+        
+        <div class="form-group">
+            <label for="toastMessage">Message:</label>
+            <textarea id="toastMessage">This is an important notification that requires your acknowledgment. Please click the ACK button to confirm you've read this message.</textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="toastType">Toast Type:</label>
+            <select id="toastType">
+                <option value="info">Info</option>
+                <option value="success">Success</option>
+                <option value="error">Error</option>
+            </select>
+        </div>
+        
+        <button id="showToastBtn">Show Toast with ACK Button</button>
+        
+        <div class="status" id="statusArea">
+            App initialization status: <span id="initStatus">Initializing...</span>
+        </div>
+    </div>
 
-        <!--  <h1>Open Window Handler</h1> 
+    <script>
+        // Initialize the Genesys Cloud Client App SDK
+        const myClientApp = new window.purecloud.apps.ClientApp({
+            pcEnvironmentQueryParam: 'pcEnvironment'
+        });
 
-        <form class="form-horizontal container-fluid">
-            <div class="form-group target-url-group">
-                <label for="targetURL" class="col-sm-1 control-label">URL</label>
-                <div class="col-sm-11">
-                    <input type="text" class="form-control" id="targetURL" placeholder="https://en.wikipedia.org/wiki/Main_Page">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-sm-offset-1 col-sm-11">
-                    <button type="submit" class="btn btn-primary" id="openWindow">Open Window</button>
-                </div>
-            </div>
-        </form>  -->
+        // DOM elements
+        const initStatusEl = document.getElementById('initStatus');
+        const showToastBtn = document.getElementById('showToastBtn');
+        const toastTitleInput = document.getElementById('toastTitle');
+        const toastMessageInput = document.getElementById('toastMessage');
+        const toastTypeSelect = document.getElementById('toastType');
+        const statusArea = document.getElementById('statusArea');
 
-        <script>$(function () {
-                let myClientApp = null;
+        // Handle the bootstrap lifecycle event
+        myClientApp.lifecycle.addBootstrapListener(() => {
+            initStatusEl.textContent = 'App bootstrapping...';
+            
+            // Let Genesys Cloud know the app is ready
+            setTimeout(() => {
+                myClientApp.lifecycle.bootstrapped();
+                initStatusEl.textContent = 'App ready';
+                
+                // Show a welcome toast when the app initializes
+                showWelcomeToast();
+            }, 1000);
+        });
 
-                // Note: This manual check for query string is for backwards compatibility of this
-                // deployed example.  In your own apps, you can assume the query param will be
-                // provided by Genesys Cloud if you have configured it in your app's config.
-                const envQueryParamName = 'pcEnvironment';
-                const hostQueryParamName = 'gcHostOrigin';
-                const targetEnvQueryParamName = 'gcTargetEnv';
-                const locationSearch = (window && window.location && typeof window.location.search === 'string') ? window.location.search : '';
-                const queryParams = new URLSearchParams(locationSearch);
-                if (queryParams.get(hostQueryParamName) || queryParams.get(targetEnvQueryParamName)) {
-                    // Compute Genesys Cloud region from host origin
-                    myClientApp = new window.purecloud.apps.ClientApp({
-                        gcHostOriginQueryParam: hostQueryParamName,
-                        gcTargetEnvQueryParam: targetEnvQueryParamName
-                    });
-                } else if (queryParams.get(envQueryParamName)) {
-                    // Compute Genesys Cloud region from pcEnvironment
-                    myClientApp = new window.purecloud.apps.ClientApp({ pcEnvironmentQueryParam: envQueryParamName });
-                } else {
-                    // Use default Genesys Cloud region
-                    myClientApp = new window.purecloud.apps.ClientApp();
+        // Show welcome toast
+        function showWelcomeToast() {
+            myClientApp.alerting.showToastPopup(
+                "Welcome",
+                "Toast Notification Demo app is now ready. Use the form to create toasts with acknowledgment buttons.",
+                { 
+                    type: "info",
+                    timeout: 7,
+                    showCloseButton: true
                 }
+            );
+        }
 
-                // Toast
-                var $titleField = $('input#title');
-                var $msgField = $('textarea#message');
+        // Add focus/blur listeners
+        myClientApp.lifecycle.addFocusListener(() => {
+            updateStatus('App is now focused');
+        });
 
-                function canSubmitForm () {
-                    return !!($titleField.val() && $msgField.val());
-                }
+        myClientApp.lifecycle.addBlurListener(() => {
+            updateStatus('App is now blurred (not in focus)');
+        });
 
-                function setFormSubmissionState() {
-                    $('button.send-toast').prop('disabled', !canSubmitForm());
-                }
+        // Add stop listener
+        myClientApp.lifecycle.addStopListener(() => {
+            updateStatus('App is stopping...');
+            
+            // Notify Genesys Cloud that the app is done with cleanup
+            setTimeout(() => {
+                myClientApp.lifecycle.stopped();
+            }, 500);
+        });
 
-                $titleField.on('input change', setFormSubmissionState);
-                $msgField.on('input change', setFormSubmissionState);
+        // Helper function to update status
+        function updateStatus(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const statusMessage = document.createElement('p');
+            statusMessage.textContent = `${timestamp}: ${message}`;
+            statusArea.appendChild(statusMessage);
+        }
 
-                $('form').submit(function (e) {
-                    e.preventDefault();
-
-                    if (canSubmitForm() === false) {
-                        return false;
-                    }
-
-                    var options = {
-                        id: $('#msgId').val(),
-                        type: $('#toastType').val(),
-                        markdownMessage: ($('#markdownMessage').is(":checked")),
-          //            showCloseButton: ($('#showCloseButton').is(":checked"))
-                    };
-
-                    var timeoutStr = $('#timeout').val();
-                    var timeoutInt = parseInt(timeoutStr, 10);
-                    if (timeoutInt == timeoutStr) {
-                        options.timeout = timeoutInt;
-                    }
-
-                    myClientApp.alerting.showToastPopup($titleField.val(), $msgField.val(), options);
-                    $titleField.val('');
-                    $msgField.val('');
-                    setFormSubmissionState();
-                });
-
-                setFormSubmissionState();
-                $titleField.focus();
-
-                // Attention
-                var count = 0;
-                var $increaseBtn = $('.increase-attn-btn');
-                var $clearBtn = $('.clear-attn-btn');
-
-                $increaseBtn.on('click', incrementCount);
-                $clearBtn.on('click', clearCount);
-
-                function incrementCount () {
-                    ++count;
-                    myClientApp.alerting.setAttentionCount(count);
-                }
-
-                function clearCount () {
-                    count = 0;
-                    myClientApp.alerting.setAttentionCount(0);
-                }
-
-                // OpenWindow
-                $('#openWindow').on('click', function () {
-                    const targetURL = document.getElementById('targetURL').value
-                    myClientApp.coreUi.openWindow(targetURL);
-                });
-            });
-        </script>
-    </body>
+        // Show toast button click handler
+        showToastBtn.addEventListener('click', () => {
+            const title = toastTitleInput.value.trim();
+            const message = toastMessageInput.value.trim();
+            const type = toastTypeSelect.value;
+            
+            if (!title || !message) {
+                alert('Please enter both title and message');
+                return;
+            }
+            
+            // For error type, we must use timeout: 0 and explicitly set showCloseButton: true
+            const options = {
+                type: type,
+                id: 'ack-toast-' + Date.now(), // Unique ID for the toast
+                markdownMessage: true,
+                showCloseButton: true
+            };
+            
+            if (type === 'error') {
+                options.timeout = 0; // Required for error toasts
+            } else {
+                options.timeout = 0; // Setting to 0 to make it stay until acknowledged
+            }
+            
+            // Add an ACK button indicator to the message
+            const messageWithAck = `${message}\n\n**[ACK]** Click the close button to acknowledge`;
+            
+            // Show the toast
+            myClientApp.alerting.showToastPopup(title, messageWithAck, options);
+            
+            // Log the action
+            updateStatus(`Displayed "${type}" toast with title: "${title}"`);
+        });
+    </script>
+</body>
 </html>
-
